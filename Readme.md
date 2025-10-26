@@ -247,3 +247,10 @@ Contribuições são bem-vindas! Por favor:
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
+## 🏂 Equipe
+
+O projeto foi desenvolvido em conjunto por esta equipe incrível:
+- Luis Fernando Méndez (Github: https://github.com/lufernandomg)
+- Felipe Gigante (Github: https://github.com/felipegigante)
+- Arthur Brasi (Github: https://github.com/ArthurBrasi-06)
+- Joziel Reis (Github: https://github.com/joziel99)
