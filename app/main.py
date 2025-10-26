@@ -6,7 +6,7 @@ from utils.guardrails import is_allowed
 from utils.setup_rag import post_query
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), "static"))
 
 @app.route("/")
 def index():

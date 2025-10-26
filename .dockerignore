@@ -7,3 +7,5 @@ __pycache__/
 .git
 .gitignore
 .DS_Store
+app/utils/__pycache__/
+*.sqlite3

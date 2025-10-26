@@ -3,7 +3,7 @@ import json
 
 URL_MCP_RAG = "https://n8n-887769016479.us-central1.run.app/webhook/perguntar-rag"
 
-def post_query(self, query: str) -> httpx.Response:
+def post_query(query: str) -> httpx.Response:
     url = URL_MCP_RAG
     
     try:
