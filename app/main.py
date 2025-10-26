@@ -2,11 +2,15 @@
 import os
 import requests
 from flask import Flask, send_from_directory, jsonify, request
-from app.utils.guardrails import is_allowed
-from app.utils.setup_rag import query_benefits
+from utils.guardrails import is_allowed
+from utils.setup_rag import post_query
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 app = Flask(__name__, static_folder="static")
+
+@app.route("/")
+def index():
+    return send_from_directory(app.static_folder, "index.html")
 
 @app.route("/session")
 def session():
@@ -42,7 +46,7 @@ def analyze():
         return jsonify({"result": "Desculpe, não posso ajudar com esse tipo de conteúdo."})
 
     # 2) RAG
-    benefits = query_benefits(text)
+    benefits = post_query(text)
 
     if not benefits:
         return jsonify({"result": "Não encontrei benefícios correspondentes ainda. Pode me contar um pouco mais sobre sua situação?"})

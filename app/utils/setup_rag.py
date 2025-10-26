@@ -1,27 +1,18 @@
-# rag.py
-import chromadb
+import httpx
+import json
 
-CHROMA_PATH = "./chroma_db"
-COLLECTION_NAME = "beneficios_sp"
+URL_MCP_RAG = "http-url"
 
-client = chromadb.PersistentClient(path=CHROMA_PATH)
-collection = client.get_collection(COLLECTION_NAME)
-
-def query_benefits(text: str):
-    """Retorna os benefícios mais relevantes para o que o usuário falou."""
-
-    results = collection.query(
-        query_texts=[text],
-        n_results=3
-    )
-
-    if not results["documents"] or len(results["documents"][0]) == 0:
+def post_query(self, query: str) -> httpx.Response:
+    url = URL_MCP_RAG
+    
+    try:
+        body = {"query": query}
+        headers = {"Content-Type": "application/json"}
+        response = httpx.post(url, json=body, headers=headers)
+    
+    except httpx.HTTPError as e:
+        print(f"An error occurred while making the request: {e}")
         return None
-
-    context = []
-    for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
-        context.append(
-            f"- **{meta['programa']}** → {doc}"
-        )
-
-    return "\n".join(context)
+    
+    return json.loads(response.text).get("message", None)
