@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>GPT-4o Voice Demo</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; height: 100vh;
+      background: #f5f6fa;
+    }
+    button {
+      padding: 1rem 2rem; font-size: 1.2rem;
+      border: none; border-radius: 8px;
+      background: #007bff; color: white;
+      cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <h1>🎙️ Habla con GPT-4o</h1>
+  <button id="start">Iniciar conversación</button>
+  <p id="status"></p>
+
+  <script>
+    async function initRealtime() {
+      document.getElementById("status").innerText = "Conectando...";
+      const response = await fetch("/session");
+      const data = await response.json();
+
+      const pc = new RTCPeerConnection();
+
+      // Captura micrófono
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+      // Reproduce el audio remoto
+      const audio = document.createElement("audio");
+      audio.autoplay = true;
+      pc.ontrack = e => { audio.srcObject = e.streams[0]; };
+
+      // Negociación WebRTC
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      const baseUrl = "https://api.openai.com/v1/realtime";
+      const sdpResponse = await fetch(`${baseUrl}?model=${data.model}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${data.client_secret.value}`,
+          "Content-Type": "application/sdp"
+        },
+        body: offer.sdp,
+      });
+      const answer = {
+        type: "answer",
+        sdp: await sdpResponse.text(),
+      };
+      await pc.setRemoteDescription(answer);
+
+      document.getElementById("status").innerText = "Conectado 🎧 — comece a falar!";
+    }
+
+    document.getElementById("start").onclick = initRealtime;
+  </script>
+</body>
+</html>

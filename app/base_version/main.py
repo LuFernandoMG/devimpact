@@ -24,7 +24,7 @@ def generate_session():
             "Content-Type": "application/json",
         },
         json={
-            "model": "gpt-4o-realtime-preview",
+            "model": "gpt-4o-mini-realtime-preview",
             "voice": "verse",
             "instructions": (
                 "Você é um assistente telefônico que ajuda pessoas a entender "
